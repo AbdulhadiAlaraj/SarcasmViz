@@ -1,4 +1,4 @@
-# Arabic Sarcasm Detection with Machine Learning and AraBERT WebApp
+# Arabic Sarcasm Detection WebApp
 This repository contains the source code for a Streamlit web application that leverages both traditional machine learning models and the AraBERT transformer model to detect sarcasm in Arabic text. It includes a TensorFlow implementation for AraBERT and uses several classical machine learning models for comparative analysis.
 
 ## Features
