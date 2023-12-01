@@ -97,25 +97,95 @@ def collect_probabilities(ml_models, user_input):
 # Updated function to plot all model probabilities in one chart
 def plot_combined_probability_chart(model_probabilities):
     labels = ["Not Sarcastic", "Sarcastic"]
-    fig = go.Figure()
+    fig1 = go.Figure()
     for model_name, probabilities in model_probabilities.items():
         for i, label in enumerate(labels):
-            fig.add_trace(go.Bar(name=model_name + ' - ' + label, x=[model_name], y=[probabilities[i]], width=0.5))
+            fig1.add_trace(go.Bar(name=model_name + ' - ' + label, x=[model_name], y=[probabilities[i]], width=0.5))
 
-    fig.update_layout(
+    fig1.update_layout(
         barmode='group',
         title_text='Model Confidence Levels Comparison',
         xaxis_title="Model",
         yaxis_title="Confidence",
         yaxis=dict(range=[0, 1])
     )
-    st.plotly_chart(fig)
+
+    for model_name, probabilities in model_probabilities.items():
+        fig = go.Figure()
+
+        # Gauge settings
+        gauge_settings = lambda value, color: {
+            'axis': {'range': [0, 1], 'tickwidth': 1, 'tickcolor': color},
+            'bar': {'color': color},
+            'steps': [
+                {'range': [0, 0.5], 'color': 'lightgray'},
+                {'range': [0.5, 1], 'color': 'lightgray'}
+            ],
+            'threshold': {
+                'line': {'color': color, 'width': 4},
+                'thickness': 0.75,
+                'value': value
+            }
+        }
+
+        # Animation frames
+        frames = [
+            go.Frame(
+                data=[
+                    go.Indicator(
+                        mode="gauge+number",
+                        value=probabilities[0],
+                        domain={'x': [0, 0.48], 'y': [0, 1]},
+                        gauge=gauge_settings(probabilities[0], "red"),
+                        title="Not Sarcastic"
+                    ),
+                    go.Indicator(
+                        mode="gauge+number",
+                        value=probabilities[1],
+                        domain={'x': [0.52, 1], 'y': [0, 1]},
+                        gauge=gauge_settings(probabilities[1], "green"),
+                        title="Sarcastic"
+                    )
+                ],
+                name=str(probabilities)
+            )
+        ]
+
+        # Initial state (empty gauges)
+        fig.add_trace(go.Indicator(
+            mode="gauge+number",
+            value=0,
+            domain={'x': [0, 0.48], 'y': [0, 1]},
+            gauge=gauge_settings(0, "blue"),
+            title="Not Sarcastic"
+        ))
+        fig.add_trace(go.Indicator(
+            mode="gauge+number",
+            value=0,
+            domain={'x': [0.52, 1], 'y': [0, 1]},
+            gauge=gauge_settings(0, "red"),
+            title="Sarcastic"
+        ))
+
+        fig.frames = frames
+
+        # Update layout for animation
+        fig.update_layout(
+            title_text=f'Confidence Levels for {model_name}',
+            updatemenus=[{
+                'type': 'buttons',
+                'showactive': False,
+                'buttons': [{'label': 'Play', 'method': 'animate', 'args': [None, {'frame': {'duration': 500, 'redraw': True}, 'fromcurrent': True}]}]
+            }],
+            transition={'duration': 20000}
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig1)
 
 
 # Streamlit app
 st.title("Arabic Sarcasm Detection")
 user_input = st.text_area("Enter Arabic text to analyze for sarcasm:")
-#features = extract_features(user_input)
 ml_models = {
     'KNN': load_pickle_model(r'KNearest_Neighbors.pkl'),
     'Linear SVC': load_pickle_model(r'Lin_Support_Vector_Class.pkl'),
