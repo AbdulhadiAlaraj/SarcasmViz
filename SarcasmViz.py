@@ -180,7 +180,7 @@ def plot_combined_probability_chart(model_probabilities):
             transition={'duration': 2000}
         )
         st.plotly_chart(fig, use_container_width=True)
-    st.plotly_chart(fig1)
+    st.plotly_chart(fig1, use_container_width=True)
 
 
 # Streamlit app
