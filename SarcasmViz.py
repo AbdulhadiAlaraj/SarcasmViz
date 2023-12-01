@@ -116,15 +116,11 @@ def plot_combined_probability_chart(model_probabilities):
 # Streamlit app
 st.title("Arabic Sarcasm Detection")
 user_input = st.text_area("Enter Arabic text to analyze for sarcasm:")
-features = extract_features(user_input)
-ml_models = {
-    'Linear SVC': load_pickle_model(r'Lin_Support_Vector_Class.pkl'),
-    'Naive Bayes': load_pickle_model(r'Naive_Bayes.pkl'),
-    'Ridge Classifier': load_pickle_model(r'Ridge_Classifier.pkl')
-}
+#features = extract_features(user_input)
+
 results = {}
 if st.button("Analyze"):
-    model_probabilities = collect_probabilities(ml_models, user_input)
+    model_probabilities ={}
     # TensorFlow model prediction
     tf_probabilities = predict_with_tf_model(user_input)
     model_probabilities['AraBERT'] = tf_probabilities
