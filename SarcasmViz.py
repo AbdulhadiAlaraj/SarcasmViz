@@ -1,7 +1,6 @@
 import streamlit as st
 import plotly.express as px
 from arabert import ArabertPreprocessor
-from sklearn.preprocessing import MinMaxScaler
 from transformers import AutoTokenizer, TFAutoModel
 import tensorflow as tf
 import numpy as np

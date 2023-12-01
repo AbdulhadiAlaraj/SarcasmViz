@@ -82,7 +82,6 @@ scikit-learn
 scipy
 seaborn
 six
-sklearn
 smmap
 streamlit
 sympy
