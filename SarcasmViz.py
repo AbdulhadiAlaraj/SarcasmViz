@@ -118,7 +118,6 @@ st.title("Arabic Sarcasm Detection")
 user_input = st.text_area("Enter Arabic text to analyze for sarcasm:")
 features = extract_features(user_input)
 ml_models = {
-    'KNN': load_pickle_model(r'KNearest_Neighbors.pkl'),
     'Linear SVC': load_pickle_model(r'Lin_Support_Vector_Class.pkl'),
     'Naive Bayes': load_pickle_model(r'Naive_Bayes.pkl'),
     'Ridge Classifier': load_pickle_model(r'Ridge_Classifier.pkl')
