@@ -10,7 +10,7 @@ import pandas as pd
 
 @st.cache_resource()
 def load_tf_model():
-    model_path = r'C:\Users\Perseus\Documents\GitHub\ArabicSarcasmDetection\Deep Learning\araBert\SarcasmAraBERT'  # Update this path to your model
+    model_path = r'SarcasmAraBERT'  # Update this path to your model
     return tf.keras.models.load_model(model_path)
 
 @st.cache_resource()
