@@ -18,7 +18,6 @@ def load_pickle_model(model_name):
     with open(model_name, 'rb') as file:
         return pickle.load(file)
 
-
 # Initialize the tokenizer and model
 tokenizer = AutoTokenizer.from_pretrained('aubmindlab/bert-base-arabertv02')
 tf_model = load_tf_model()
@@ -116,6 +115,7 @@ def plot_combined_probability_chart(model_probabilities):
 # Streamlit app
 st.title("Arabic Sarcasm Detection")
 user_input = st.text_area("Enter Arabic text to analyze for sarcasm:")
+#features = extract_features(user_input)
 ml_models = {
     'KNN': load_pickle_model(r'KNearest_Neighbors.pkl'),
     'Linear SVC': load_pickle_model(r'Lin_Support_Vector_Class.pkl'),
@@ -125,8 +125,7 @@ ml_models = {
 }
 results = {}
 if st.button("Analyze"):
-    #model_probabilities = collect_probabilities(ml_models, user_input)
-    model_probabilities = {}
+    model_probabilities = collect_probabilities(ml_models, user_input)
     # TensorFlow model prediction
     tf_probabilities = predict_with_tf_model(user_input)
     model_probabilities['AraBERT'] = tf_probabilities
