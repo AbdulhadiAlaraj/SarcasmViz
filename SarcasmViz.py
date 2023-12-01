@@ -10,7 +10,7 @@ import pandas as pd
 
 @st.cache_resource()
 def load_tf_model():
-    model_path = r'SarcasmAraBERT'  # Update this path to your model
+    model_path = r'SarcasmAraBERT'
     return tf.keras.models.load_model(model_path)
 
 @st.cache_resource()
@@ -47,7 +47,7 @@ def tokenize_and_preprocess_single(text, tokenizer, preprocess):
     encoded = tokenizer(preprocessed_text, padding=True, truncation=True, max_length=128, return_tensors="tf")
     return encoded
 
-def extract_features(texts, model_name="aubmindlab/bert-base-arabert"):
+def extract_features(texts, model_name="aubmindlab/bert-base-arabert"):#NOTE: Reminder to change model usage here due to memory issues when deploying
         tokenizer = AutoTokenizer.from_pretrained(model_name)
         model = TFAutoModel.from_pretrained(model_name)
 
@@ -59,26 +59,22 @@ def extract_features(texts, model_name="aubmindlab/bert-base-arabert"):
     
 def predict_with_ml_model(model, text, feature_extraction_func):
     # Extract features for the input text
-        features = feature_extraction_func([text])  # Text is wrapped in a list
+        features = feature_extraction_func([text])
         prediction = model.predict(features)
 
         if hasattr(model, "predict_proba"):
             probabilities = model.predict_proba(features)
         else:
             probabilities = get_confidence_from_decision_function(model, features)
-        return prediction, probabilities  # or return probabilities
+        return prediction, probabilities
 
 def get_confidence_from_decision_function(model, features):
     decision_values = model.decision_function(features)
     
-    # Handle binary classification
     if decision_values.ndim == 1:
-        # Apply the sigmoid function to map to [0,1]
         confidence = 1 / (1 + np.exp(-decision_values))
         probabilities = np.vstack([1 - confidence, confidence]).T
     else:
-        # For multi-class classification, apply softmax
-        # Softmax converts to probabilities that sum to 1 for each sample
         exp_values = np.exp(decision_values - np.max(decision_values, axis=1, keepdims=True))
         probabilities = exp_values / np.sum(exp_values, axis=1, keepdims=True)
     
@@ -100,7 +96,11 @@ def plot_combined_probability_chart(model_probabilities):
     fig1 = go.Figure()
     for model_name, probabilities in model_probabilities.items():
         for i, label in enumerate(labels):
-            fig1.add_trace(go.Bar(name=model_name + ' - ' + label, x=[model_name], y=[probabilities[i]], width=0.5))
+            if label == "Not Sarcastic":
+                color = 'red'
+            else:
+                color = 'green'
+            fig1.add_trace(go.Bar(name=model_name + ' - ' + label, x=[model_name], y=[probabilities[i]], width=0.5, marker_color=color))
 
     fig1.update_layout(
         barmode='group',
@@ -156,14 +156,14 @@ def plot_combined_probability_chart(model_probabilities):
             mode="gauge+number",
             value=0,
             domain={'x': [0, 0.48], 'y': [0, 1]},
-            gauge=gauge_settings(0, "blue"),
+            gauge=gauge_settings(0, "red"),
             title="Not Sarcastic"
         ))
         fig.add_trace(go.Indicator(
             mode="gauge+number",
             value=0,
             domain={'x': [0.52, 1], 'y': [0, 1]},
-            gauge=gauge_settings(0, "red"),
+            gauge=gauge_settings(0, "green"),
             title="Sarcastic"
         ))
 
@@ -177,7 +177,7 @@ def plot_combined_probability_chart(model_probabilities):
                 'showactive': False,
                 'buttons': [{'label': 'Play', 'method': 'animate', 'args': [None, {'frame': {'duration': 500, 'redraw': True}, 'fromcurrent': True}]}]
             }],
-            transition={'duration': 20000}
+            transition={'duration': 2000}
         )
         st.plotly_chart(fig, use_container_width=True)
     st.plotly_chart(fig1)
@@ -195,18 +195,16 @@ ml_models = {
 }
 results = {}
 if st.button("Analyze"):
-    model_probabilities = collect_probabilities(ml_models, user_input)
+    #model_probabilities = collect_probabilities(ml_models, user_input)
+    model_probabilities = {}
     # TensorFlow model prediction
     tf_probabilities = predict_with_tf_model(user_input)
     model_probabilities['AraBERT'] = tf_probabilities
     tf_sarcasm_flag = np.argmax(tf_probabilities)
-    #plot_probability_chart(tf_probabilities, 'AraBERT Model')
     result_text = "not sarcastic 🔴" if tf_sarcasm_flag == 0 else "sarcastic 🟢"
     results['AraBERT'] = result_text
     
     plot_combined_probability_chart(model_probabilities)
 
-        
-    # Convert the results to a DataFrame and display as a table
     results_df = pd.DataFrame(list(results.items()), columns=['Model', 'Prediction'])
     st.table(results_df)
