@@ -118,11 +118,10 @@ st.title("Arabic Sarcasm Detection")
 user_input = st.text_area("Enter Arabic text to analyze for sarcasm:")
 features = extract_features(user_input)
 ml_models = {
-    'KNN': load_pickle_model(r'C:\Users\Perseus\Documents\GitHub\ArabicSarcasmDetection\Machine Learning\Pipeline Training\Trained Models\KNearest_Neighbors.pkl'),
-    'Linear SVC': load_pickle_model(r'C:\Users\Perseus\Documents\GitHub\ArabicSarcasmDetection\Machine Learning\Pipeline Training\Trained Models\Lin_Support_Vector_Class.pkl'),
-    'Logistic Regression': load_pickle_model(r'C:\Users\Perseus\Documents\GitHub\ArabicSarcasmDetection\Machine Learning\Pipeline Training\Trained Models\Logistic_Regression.pkl'),
-    'Naive Bayes': load_pickle_model(r'C:\Users\Perseus\Documents\GitHub\ArabicSarcasmDetection\Machine Learning\Pipeline Training\Trained Models\Naive_Bayes.pkl'),
-    'Ridge Classifier': load_pickle_model(r'C:\Users\Perseus\Documents\GitHub\ArabicSarcasmDetection\Machine Learning\Pipeline Training\Trained Models\Ridge_Classifier.pkl')
+    'KNN': load_pickle_model(r'Trained Models\KNearest_Neighbors.pkl'),
+    'Linear SVC': load_pickle_model(r'Trained Models\Lin_Support_Vector_Class.pkl'),
+    'Naive Bayes': load_pickle_model(r'Trained Models\Naive_Bayes.pkl'),
+    'Ridge Classifier': load_pickle_model(r'Trained Models\Ridge_Classifier.pkl')
 }
 results = {}
 if st.button("Analyze"):
