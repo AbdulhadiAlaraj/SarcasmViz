@@ -22,12 +22,9 @@ def load_pickle_model(model_name):
 tokenizer = AutoTokenizer.from_pretrained('aubmindlab/bert-base-arabertv02')
 tf_model = load_tf_model()
 
-F_MODEL_NAME = 'aubmindlab/bert-base-arabertv02'
 #F_MODEL_NAME = 'aubmindlab/bert-base-arabert'
-
-
-feature_model = TFAutoModel.from_pretrained(F_MODEL_NAME)
-feature_tokenizer = AutoTokenizer.from_pretrained(F_MODEL_NAME)
+#feature_model = TFAutoModel.from_pretrained(F_MODEL_NAME)
+#feature_tokenizer = AutoTokenizer.from_pretrained(F_MODEL_NAME)
 
 preprocess = ArabertPreprocessor(model_name='aubmindlab/bert-base-arabertv02')
 
@@ -131,8 +128,8 @@ ml_models = {
 }
 results = {}
 if st.button("Analyze"):
-    model_probabilities = collect_probabilities(ml_models, user_input)
-    #model_probabilities = {}
+    #model_probabilities = collect_probabilities(ml_models, user_input)
+    model_probabilities = {}
     # TensorFlow model prediction
     tf_probabilities = predict_with_tf_model(user_input)
     model_probabilities['AraBERT'] = tf_probabilities
