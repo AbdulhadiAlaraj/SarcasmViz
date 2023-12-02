@@ -1,7 +1,7 @@
 import streamlit as st
 import plotly.express as px
 from arabert import ArabertPreprocessor
-from transformers import AutoTokenizer, TFAutoModel, pipeline
+from transformers import AutoTokenizer, TFAutoModel
 import tensorflow as tf
 import numpy as np
 import plotly.graph_objects as go
@@ -22,7 +22,7 @@ def load_pickle_model(model_name):
 tokenizer = AutoTokenizer.from_pretrained('aubmindlab/bert-base-arabertv02')
 tf_model = load_tf_model()
 
-F_MODEL_NAME = 'aubmindlab/bert-base-arabert'
+#F_MODEL_NAME = 'aubmindlab/bert-base-arabert'
 #feature_model = TFAutoModel.from_pretrained(F_MODEL_NAME)
 #feature_tokenizer = AutoTokenizer.from_pretrained(F_MODEL_NAME)
 
@@ -52,25 +52,12 @@ def tokenize_and_preprocess_single(text, tokenizer, preprocess):
     encoded = tokenizer(preprocessed_text, padding=True, truncation=True, max_length=128, return_tensors="tf")
     return encoded
 
-def extract_features(texts):
-    # Initialize the pipeline for feature extraction
-    feature_extraction_pipeline = pipeline('feature-extraction', model=F_MODEL_NAME)
-
-    # Convert texts to a list if it's a single string
-    if isinstance(texts, str):
-        texts = [texts]
-
-    # Extract features for each text
-    features = feature_extraction_pipeline(texts)
-
-    # Extract the first token's embeddings (CLS token) for each text
-    first_token_embeddings = [feature_set[0] for feature_set in features]
-
-    # Convert to a 2D numpy array (shape: number of texts x embedding size)
-    first_token_embeddings_array = np.vstack(first_token_embeddings)
-
-    return first_token_embeddings_array
-
+def extract_features(texts):#NOTE: Reminder to change model usage here due to memory issues when deploying
+        inputs = feature_tokenizer(texts, padding=True, truncation=True, return_tensors="tf")
+        outputs = feature_model(inputs)
+        # Extract the embeddings from the output
+        embeddings = outputs.last_hidden_state[:, 0, :].numpy()
+        return embeddings
 
 def predict_with_ml_model(model, text, feature_extraction_func):
     # Extract features for the input text
@@ -141,8 +128,8 @@ ml_models = {
 }
 results = {}
 if st.button("Analyze"):
-    model_probabilities = collect_probabilities(ml_models, user_input)
-    #model_probabilities = {}
+    #model_probabilities = collect_probabilities(ml_models, user_input)
+    model_probabilities = {}
     # TensorFlow model prediction
     tf_probabilities = predict_with_tf_model(user_input)
     model_probabilities['AraBERT'] = tf_probabilities
