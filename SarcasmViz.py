@@ -93,7 +93,6 @@ def collect_probabilities(ml_models, user_input):
     return model_probabilities
 
 # Updated function to plot all model probabilities in one chart
-st.cache_data
 def plot_combined_probability_chart(model_probabilities):
     labels = ["Not Sarcastic", "Sarcastic"]
     fig1 = go.Figure()
@@ -212,6 +211,3 @@ if st.button("Analyze"):
 
     results_df = pd.DataFrame(list(results.items()), columns=['Model', 'Prediction'])
     st.table(results_df)
-#if st.button('clear cache'):
-    #st.cache_data.clear()
-    #st.cache_resource.clear()
