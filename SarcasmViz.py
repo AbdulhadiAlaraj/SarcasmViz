@@ -22,12 +22,15 @@ def load_pickle_model(model_name):
 tokenizer = AutoTokenizer.from_pretrained('aubmindlab/bert-base-arabertv02')
 tf_model = load_tf_model()
 
-#feature_model = TFAutoModel.from_pretrained('aubmindlab/bert-base-arabert')
-#feature_tokenizer = AutoTokenizer.from_pretrained('aubmindlab/bert-base-arabert')
+F_MODEL_NAME = 'aubmindlab/bert-base-arabertv02'
+#F_MODEL_NAME = 'aubmindlab/bert-base-arabert'
+
+
+feature_model = TFAutoModel.from_pretrained(F_MODEL_NAME)
+feature_tokenizer = AutoTokenizer.from_pretrained(F_MODEL_NAME)
 
 preprocess = ArabertPreprocessor(model_name='aubmindlab/bert-base-arabertv02')
 
-@st.cache_data
 def predict_with_tf_model(text):
     inputs = tokenize_and_preprocess_single(text, tokenizer, preprocess)
 
@@ -52,7 +55,6 @@ def tokenize_and_preprocess_single(text, tokenizer, preprocess):
     encoded = tokenizer(preprocessed_text, padding=True, truncation=True, max_length=128, return_tensors="tf")
     return encoded
 
-@st.cache_data
 def extract_features(texts):#NOTE: Reminder to change model usage here due to memory issues when deploying
         inputs = feature_tokenizer(texts, padding=True, truncation=True, return_tensors="tf")
         outputs = feature_model(inputs)
@@ -113,76 +115,7 @@ def plot_combined_probability_chart(model_probabilities):
         yaxis=dict(range=[0, 1])
     )
 
-    for model_name, probabilities in model_probabilities.items():
-        fig = go.Figure()
-
-        # Gauge settings
-        gauge_settings = lambda value, color: {
-            'axis': {'range': [0, 1], 'tickwidth': 1, 'tickcolor': color},
-            'bar': {'color': color},
-            'steps': [
-                {'range': [0, 0.5], 'color': 'lightgray'},
-                {'range': [0.5, 1], 'color': 'lightgray'}
-            ],
-            'threshold': {
-                'line': {'color': color, 'width': 4},
-                'thickness': 0.75,
-                'value': value
-            }
-        }
-
-        # Animation frames
-        frames = [
-            go.Frame(
-                data=[
-                    go.Indicator(
-                        mode="gauge+number",
-                        value=probabilities[0],
-                        domain={'x': [0, 0.48], 'y': [0, 1]},
-                        gauge=gauge_settings(probabilities[0], "red"),
-                        title="Not Sarcastic"
-                    ),
-                    go.Indicator(
-                        mode="gauge+number",
-                        value=probabilities[1],
-                        domain={'x': [0.52, 1], 'y': [0, 1]},
-                        gauge=gauge_settings(probabilities[1], "green"),
-                        title="Sarcastic"
-                    )
-                ],
-                name=str(probabilities)
-            )
-        ]
-
-        # Initial state (empty gauges)
-        fig.add_trace(go.Indicator(
-            mode="gauge+number",
-            value=0,
-            domain={'x': [0, 0.48], 'y': [0, 1]},
-            gauge=gauge_settings(0, "red"),
-            title="Not Sarcastic"
-        ))
-        fig.add_trace(go.Indicator(
-            mode="gauge+number",
-            value=0,
-            domain={'x': [0.52, 1], 'y': [0, 1]},
-            gauge=gauge_settings(0, "green"),
-            title="Sarcastic"
-        ))
-
-        fig.frames = frames
-
-        # Update layout for animation
-        fig.update_layout(
-            title_text=f'Confidence Levels for {model_name}',
-            updatemenus=[{
-                'type': 'buttons',
-                'showactive': False,
-                'buttons': [{'label': 'Play', 'method': 'animate', 'args': [None, {'frame': {'duration': 500, 'redraw': True}, 'fromcurrent': True}]}]
-            }],
-            transition={'duration': 2000}
-        )
-        st.plotly_chart(fig, use_container_width=True)
+    
     st.plotly_chart(fig1, use_container_width=True)
 
 
@@ -198,8 +131,8 @@ ml_models = {
 }
 results = {}
 if st.button("Analyze"):
-    #model_probabilities = collect_probabilities(ml_models, user_input)
-    model_probabilities = {}
+    model_probabilities = collect_probabilities(ml_models, user_input)
+    #model_probabilities = {}
     # TensorFlow model prediction
     tf_probabilities = predict_with_tf_model(user_input)
     model_probabilities['AraBERT'] = tf_probabilities
