@@ -5,7 +5,7 @@ This repository contains the source code for a Streamlit web application that le
 Sarcasm detection in Arabic text using AraBERT and multiple machine learning models.
 Visualization of confidence levels using Plotly bar and gauge charts.
 Use of Streamlit for an interactive web application interface.
-##Installation
+## Installation
 Before running the application, ensure you have the following prerequisites installed:
 
 - Python 3.8+
