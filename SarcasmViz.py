@@ -19,14 +19,14 @@ def load_pickle_model(model_name):
         return pickle.load(file)
 
 # Initialize the tokenizer and model
-preprocess = ArabertPreprocessor(model_name='aubmindlab/bert-base-arabertv02')
 tokenizer = AutoTokenizer.from_pretrained('aubmindlab/bert-base-arabertv02')
 tf_model = load_tf_model()
 
-F_MODEL_NAME = 'aubmindlab/bert-base-arabertv02'
-feature_model = TFAutoModel.from_pretrained(F_MODEL_NAME)
-feature_tokenizer = AutoTokenizer.from_pretrained(F_MODEL_NAME)
+#F_MODEL_NAME = 'aubmindlab/bert-base-arabert'
+#feature_model = TFAutoModel.from_pretrained(F_MODEL_NAME)
+#feature_tokenizer = AutoTokenizer.from_pretrained(F_MODEL_NAME)
 
+preprocess = ArabertPreprocessor(model_name='aubmindlab/bert-base-arabertv02')
 
 def predict_with_tf_model(text):
     inputs = tokenize_and_preprocess_single(text, tokenizer, preprocess)
@@ -128,18 +128,14 @@ ml_models = {
 }
 results = {}
 if st.button("Analyze"):
-    model_probabilities = collect_probabilities(ml_models, user_input)
-    #model_probabilities = {}
+    #model_probabilities = collect_probabilities(ml_models, user_input)
+    model_probabilities = {}
     # TensorFlow model prediction
     tf_probabilities = predict_with_tf_model(user_input)
     model_probabilities['AraBERT'] = tf_probabilities
     tf_sarcasm_flag = np.argmax(tf_probabilities)
     result_text = "not sarcastic 🔴" if tf_sarcasm_flag == 0 else "sarcastic 🟢"
     results['AraBERT'] = result_text
-    model_probabilities['CNN/RNN Hybrid'] = tf_probabilities
-    model_probabilities['Pure RNN'] =  tf_probabilities
-    results['CNN/RNN Hybrid'] = result_text
-    results['Pure RNN'] =  result_text
     
     plot_combined_probability_chart(model_probabilities)
 
