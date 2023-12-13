@@ -19,32 +19,32 @@ def load_pickle_model(model_name):
         return pickle.load(file)
 
 # Initialize the tokenizer and model
-tokenizer = AutoTokenizer.from_pretrained('aubmindlab/bert-base-arabertv02')
-tf_model = load_tf_model()
+#tokenizer = AutoTokenizer.from_pretrained('aubmindlab/bert-base-arabertv02')
+#tf_model = load_tf_model()
 
-#F_MODEL_NAME = 'aubmindlab/bert-base-arabert'
-#feature_model = TFAutoModel.from_pretrained(F_MODEL_NAME)
-#feature_tokenizer = AutoTokenizer.from_pretrained(F_MODEL_NAME)
+F_MODEL_NAME = 'aubmindlab/bert-base-arabert'
+feature_model = TFAutoModel.from_pretrained(F_MODEL_NAME)
+feature_tokenizer = AutoTokenizer.from_pretrained(F_MODEL_NAME)
 
 preprocess = ArabertPreprocessor(model_name='aubmindlab/bert-base-arabertv02')
 
-def predict_with_tf_model(text):
-    inputs = tokenize_and_preprocess_single(text, tokenizer, preprocess)
-
-    input_ids = tf.convert_to_tensor(inputs['input_ids'], dtype=tf.int32)
-    attention_mask = tf.convert_to_tensor(inputs['attention_mask'], dtype=tf.int32)
-    token_type_ids = tf.convert_to_tensor(inputs['token_type_ids'], dtype=tf.int32)
-
-    model_inputs = {
-        'input_ids': input_ids,
-        'attention_mask': attention_mask,
-        'token_type_ids': token_type_ids
-    }
-
-    predictions = tf_model(model_inputs)
-    logits = predictions['logits']
-    probabilities = tf.nn.softmax(logits, axis=-1)
-    return probabilities.numpy()[0]
+# def predict_with_tf_model(text):
+    # inputs = tokenize_and_preprocess_single(text, tokenizer, preprocess)
+# 
+    # input_ids = tf.convert_to_tensor(inputs['input_ids'], dtype=tf.int32)
+    # attention_mask = tf.convert_to_tensor(inputs['attention_mask'], dtype=tf.int32)
+    # token_type_ids = tf.convert_to_tensor(inputs['token_type_ids'], dtype=tf.int32)
+# 
+    # model_inputs = {
+        # 'input_ids': input_ids,
+        # 'attention_mask': attention_mask,
+        # 'token_type_ids': token_type_ids
+    # }
+# 
+    # predictions = tf_model(model_inputs)
+    # logits = predictions['logits']
+    # probabilities = tf.nn.softmax(logits, axis=-1)
+    # return probabilities.numpy()[0]
 
 
 def tokenize_and_preprocess_single(text, tokenizer, preprocess):
@@ -128,14 +128,13 @@ ml_models = {
 }
 results = {}
 if st.button("Analyze"):
-    #model_probabilities = collect_probabilities(ml_models, user_input)
-    model_probabilities = {}
+    model_probabilities = collect_probabilities(ml_models, user_input)
     # TensorFlow model prediction
-    tf_probabilities = predict_with_tf_model(user_input)
-    model_probabilities['AraBERT'] = tf_probabilities
-    tf_sarcasm_flag = np.argmax(tf_probabilities)
-    result_text = "not sarcastic 🔴" if tf_sarcasm_flag == 0 else "sarcastic 🟢"
-    results['AraBERT'] = result_text
+    #tf_probabilities = predict_with_tf_model(user_input)
+    #model_probabilities['AraBERT'] = tf_probabilities
+    #tf_sarcasm_flag = np.argmax(tf_probabilities)
+    #result_text = "not sarcastic 🔴" if tf_sarcasm_flag == 0 else "sarcastic 🟢"
+    #results['AraBERT'] = result_text
     
     plot_combined_probability_chart(model_probabilities)
 
