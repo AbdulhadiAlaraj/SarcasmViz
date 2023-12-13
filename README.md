@@ -3,7 +3,7 @@ This repository contains the source code for a Streamlit web application that le
 
 ## Features
 Sarcasm detection in Arabic text using multiple machine learning models.
-Visualization of confidence levels using Plotly bar and gauge charts.
+Visualization of confidence levels using Plotly bar charts.
 Use of Streamlit for an interactive web application interface.
 ## Installation
 Before running the application, ensure you have the following prerequisites installed:
