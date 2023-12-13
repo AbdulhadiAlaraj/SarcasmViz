@@ -1,5 +1,5 @@
 # Arabic Sarcasm Detection WebApp
-This repository contains the source code for a Streamlit web application that leverages both traditional machine learning models to detect sarcasm in Arabic text.
+This repository contains the source code for a Streamlit web application that leverages traditional machine learning models to detect sarcasm in Arabic text.
 
 ## Features
 Sarcasm detection in Arabic text using multiple machine learning models.
