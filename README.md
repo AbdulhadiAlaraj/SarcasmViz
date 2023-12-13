@@ -29,11 +29,10 @@ streamlit run app.py
 ```
 ## Application Structure
 - **SarcasmViz.py:** The main Streamlit application script.
-- **SarcasmAraBERT:** The directory containing the trained TensorFlow model (AraBERT).
 - ***.pkl:** Pickle files for the trained classical machine learning models.
 ## Functionality
-- **Model Loading:** The TensorFlow model and Pickle models are loaded using Streamlit's caching to improve performance.
-- **Text Input:** Users can input Arabic text into the application, which is then processed and analyzed by both the AraBERT model and classical ML models.
+- **Model Loading:** The Pickle models are loaded using Streamlit's caching to improve performance.
+- **Text Input:** Users can input Arabic text into the application, which is then processed and analyzed by the classical ML models.
 
 ## Sarcasm Prediction and Visualization:
 
