@@ -1,8 +1,8 @@
 # Arabic Sarcasm Detection WebApp
-This repository contains the source code for a Streamlit web application that leverages both traditional machine learning models and the AraBERT transformer model to detect sarcasm in Arabic text. It includes a TensorFlow implementation for AraBERT and uses several classical machine learning models for comparative analysis.
+This repository contains the source code for a Streamlit web application that leverages both traditional machine learning models to detect sarcasm in Arabic text.
 
 ## Features
-Sarcasm detection in Arabic text using AraBERT and multiple machine learning models.
+Sarcasm detection in Arabic text using multiple machine learning models.
 Visualization of confidence levels using Plotly bar and gauge charts.
 Use of Streamlit for an interactive web application interface.
 ## Installation
@@ -15,11 +15,10 @@ Before running the application, ensure you have the following prerequisites inst
 - TensorFlow 2.x
 - Transformers library
 - Plotly
-- AraBERT
-
+- 
 You can install the necessary libraries using pip:
 ```
-pip install streamlit tensorflow transformers plotly arabert numpy pandas
+pip install streamlit tensorflow transformers plotly numpy pandas
 ```
 ## Usage
 To run the Streamlit application, navigate to the repository's root directory and execute:
