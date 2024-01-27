@@ -24,7 +24,7 @@ pip install streamlit tensorflow transformers plotly numpy pandas
 To run the Streamlit application, navigate to the repository's root directory and execute:
 
 ```
-streamlit run app.py
+streamlit run SarcasmViz.py
 ```
 ## Application Structure
 - **SarcasmViz.py:** The main Streamlit application script.
